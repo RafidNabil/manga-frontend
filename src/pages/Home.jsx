@@ -16,8 +16,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Badge } from "@/components/ui/badge"
 
-// const API_URL = process.env.REACT_APP_API_URL
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = "https://manga-backend-production-5e57.up.railway.app"
 
 function Home() {
   const [manga, setManga] = useState([])
@@ -28,7 +27,7 @@ function Home() {
   const [languageFilter, setLanguageFilter] = useState("")
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(true)
-  const [blur, setBlur] = useState(true);
+  const [blur, setBlur] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 30
 
@@ -36,18 +35,13 @@ function Home() {
     async function fetchManga() {
       try {
         setLoading(true)
-
         const params = new URLSearchParams()
-        if (sort) params.append('sortBy', sort)
-        if (order) params.append('order', order)
-        if (artist) params.append('artist', artist)
-        if (languageFilter) params.append('language', languageFilter) // comma separated
+        if (sort) params.append("sortBy", sort)
+        if (order) params.append("order", order)
+        if (artist) params.append("artist", artist)
+        if (languageFilter) params.append("language", languageFilter)
 
-        // const manga_call = `http://localhost:5000/?${params.toString()}`
         const manga_call = `${API_URL}/?${params.toString()}`
-
-        console.log(API_URL);
-        console.log("Fetching from =>", manga_call);
         const res = await fetch(manga_call)
         if (!res.ok) throw new Error("Failed to Fetch")
         const data = await res.json()
@@ -68,19 +62,18 @@ function Home() {
   const currentManga = manga.slice(indexOfFirst, indexOfLast)
 
   const goToPage = (pageNum) => setCurrentPage(pageNum)
-  const goToNext = () => currentPage < totalPages && setCurrentPage(prev => prev + 1)
-  const goToPrev = () => currentPage > 1 && setCurrentPage(prev => prev - 1)
+  const goToNext = () => currentPage < totalPages && setCurrentPage((prev) => prev + 1)
+  const goToPrev = () => currentPage > 1 && setCurrentPage((prev) => prev - 1)
 
   function toggleLanguage(lang) {
-    setSelectedLanguages(prev =>
-      prev.includes(lang) ? prev.filter(l => l !== lang) : [...prev, lang]
+    setSelectedLanguages((prev) =>
+      prev.includes(lang) ? prev.filter((l) => l !== lang) : [...prev, lang]
     )
   }
 
   function submitLanguages() {
     setLanguageFilter(selectedLanguages.join(","))
     setCurrentPage(1)
-    // Hide dropdown after submit
     const dropdown = document.getElementById("lang-dropdown")
     if (dropdown) dropdown.classList.add("hidden")
   }
@@ -88,11 +81,8 @@ function Home() {
   async function searchManga(term) {
     if (!term.trim()) return
     setLoading(true)
-
     try {
-      // const res = await fetch(`http://localhost:5000/search?q=${encodeURIComponent(term)}`)
       const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(term)}`)
-
       const data = await res.json()
       setManga(data)
       setCurrentPage(1)
@@ -103,23 +93,10 @@ function Home() {
     }
   }
 
-
   const languages = [
-    "Chinese",
-    "German",
-    "Indonesian",
-    "Thai",
-    "English",
-    "Italian",
-    "Null",
-    "French",
-    "Ukrainian",
-    "Russian",
-    "Vietnamese",
-    "Japanese",
-    "Portuguese",
-    "Spanish",
-    "Korean"
+    "Chinese", "German", "Indonesian", "Thai", "English", "Italian", "Null",
+    "French", "Ukrainian", "Russian", "Vietnamese", "Japanese", "Portuguese",
+    "Spanish", "Korean"
   ]
 
   if (loading)
@@ -132,23 +109,24 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900">
-      {/* Navbar */}
       <header className="bg-white shadow-md">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuLink className="text-2xl font-bold tracking-tight text-primary cursor-pointer"
+                <NavigationMenuLink
+                  className="text-2xl font-bold tracking-tight text-primary cursor-pointer"
                   onClick={() => {
-                    setSort("added_to_db");
-                    setOrder("desc");
-                    setArtist("");
-                    setSelectedLanguages([]);
-                    setLanguageFilter("");
-                    setSearchTerm("");
-                    setCurrentPage(1);
-                    window.location.href = '/';  // reload page
-                  }}>
+                    setSort("added_to_db")
+                    setOrder("desc")
+                    setArtist("")
+                    setSelectedLanguages([])
+                    setLanguageFilter("")
+                    setSearchTerm("")
+                    setCurrentPage(1)
+                    window.location.href = "/"
+                  }}
+                >
                   hManga
                 </NavigationMenuLink>
               </NavigationMenuItem>
@@ -157,55 +135,48 @@ function Home() {
         </div>
       </header>
 
-      {/* Content */}
       <main className="container mx-auto px-4 py-8">
         {/* Filter Bar */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="flex gap-2">
+        <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
             <Input
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search manga..."
-              className="w-full md:max-w-sm shadow-sm"
+              className="w-full sm:w-64 shadow-sm"
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   searchManga(searchTerm)
                 }
               }}
             />
-
-
-            <Button className="cursor-pointer" onClick={() => searchManga(searchTerm)}>Search</Button>
+            <Button onClick={() => searchManga(searchTerm)}>Search</Button>
           </div>
 
-
-
-          <div className="flex gap-4 items-center">
-            {/* Sort Select */}
+          <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
             <Select
               onValueChange={(value) => {
-                const [newSort, newOrder] = value.split('-')
+                const [newSort, newOrder] = value.split("-")
                 setSort(newSort)
                 setOrder(newOrder)
               }}
               value={sort && order ? `${sort}-${order}` : undefined}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="sm:w-44 w-full">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="Artist-asc">Artist</SelectItem>
-                <SelectItem value="date-asc">Date  ⬆</SelectItem>
+                <SelectItem value="date-asc">Date ⬆</SelectItem>
                 <SelectItem value="date-desc">Date ⬇</SelectItem>
-                <SelectItem value="added_to_db-asc">Added to DB  ⬆</SelectItem>
+                <SelectItem value="added_to_db-asc">Added to DB ⬆</SelectItem>
                 <SelectItem value="added_to_db-desc">Added to DB ⬇</SelectItem>
                 <SelectItem value="bookmark_add_date-asc">Bookmark ⬆</SelectItem>
                 <SelectItem value="bookmark_add_date-desc">Bookmark ⬇</SelectItem>
               </SelectContent>
             </Select>
 
-            {/* Multi-select Languages */}
-            <div className="relative w-[180px]">
+            <div className="relative w-full sm:w-44">
               <button
                 className="w-full text-left border rounded px-3 py-2"
                 onClick={() => {
@@ -237,21 +208,20 @@ function Home() {
               </div>
             </div>
 
-            <Button onClick={submitLanguages} className="cursor-pointer">Submit</Button>
-            <Button onClick={() => setBlur(prev => !prev)} className="cursor-pointer">Blur</Button>
+            <Button onClick={submitLanguages}>Submit</Button>
+            <Button onClick={() => setBlur((prev) => !prev)}>Blur</Button>
           </div>
         </div>
 
         {/* Manga Grid */}
         <div
           key={currentPage}
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 "
+          className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6"
         >
-
           {currentManga.map((manga, index) => (
             <div
               key={index}
-              className="bg-blue rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+              className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden"
             >
               <a
                 href={manga.gallery_url}
@@ -260,40 +230,38 @@ function Home() {
                 className="block"
               >
                 <img
-                  // src={`http://localhost:5000/proxy-image?url=${encodeURIComponent(
-                  //   manga.cover_image_url
-                  // )}`}
                   src={`${API_URL}/proxy-image?url=${encodeURIComponent(manga.cover_image_url)}`}
-
                   alt={manga.title}
-                  className={`w-full h-80 object-contain bg-grey object-center transition-transform duration-300 hover:scale-105 ${blur ? 'blur' : ''}`}
+                  className={`w-full h-52 sm:h-80 object-contain bg-gray-200 object-center transition-transform duration-300 hover:scale-105 ${blur ? "blur" : ""}`}
                 />
               </a>
               <div className="p-3">
-                <h2 className="text-sm font-semibold line-clamp-2">
-                  {manga.title}
-                </h2>
+                <h2 className="text-sm font-semibold line-clamp-2">{manga.title}</h2>
                 <p className="text-xs font-semibold mt-1">ID: {manga.id}</p>
-                <p className="text-xs font-semibold mt-1">
-                  {manga.date.split('T')[0]}
-                </p>
+                <p className="text-xs font-semibold mt-1">{manga.date.split("T")[0]}</p>
                 <p className="text-xs font-semibold mt-1">Lang: {manga.language}</p>
                 <p className="text-xs font-semibold mt-1">
-                  Artist: {manga.artist.join(', ')}
+                  Artist: {manga.artist.join(", ")}
                 </p>
-
-                {manga.tags.map((tag) => (<Badge
-                  variant="outline"
-                  className="bg-gray-500 text-white dark:bg-blue-600"
-                >{tag}</Badge>))}
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {manga.tags.map((tag, i) => (
+                    <Badge
+                      key={i}
+                      variant="outline"
+                      className="bg-gray-500 text-white dark:bg-blue-600"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Pagination */}
-        <div className="mt-10 flex justify-center items-center flex-wrap gap-2">
-          <Button className="cursor-pointer" onClick={goToPrev} disabled={currentPage === 1}>
+        <div className="mt-10 flex flex-wrap justify-center items-center gap-2">
+          <Button onClick={goToPrev} disabled={currentPage === 1}>
             Prev
           </Button>
           {[...Array(totalPages)].map((_, i) => {
@@ -301,7 +269,7 @@ function Home() {
             return (
               <Button
                 key={pageNum}
-                className="cursor-pointer"
+                className="w-10 sm:w-auto px-3"
                 onClick={() => goToPage(pageNum)}
                 variant={pageNum === currentPage ? "default" : "outline"}
               >
@@ -309,7 +277,7 @@ function Home() {
               </Button>
             )
           })}
-          <Button className="cursor-pointer" onClick={goToNext} disabled={currentPage === totalPages}>
+          <Button onClick={goToNext} disabled={currentPage === totalPages}>
             Next
           </Button>
         </div>
