@@ -32,6 +32,12 @@ function Home() {
   const itemsPerPage = 30
 
   useEffect(() => {
+
+    fetch("https://manga-backend-production-5e57.up.railway.app/")
+    .then(res => res.json())
+    .then(data => console.log("Backend data:", data))
+    .catch(err => console.error("Backend fetch error:", err));
+    
     async function fetchManga() {
       try {
         setLoading(true)
