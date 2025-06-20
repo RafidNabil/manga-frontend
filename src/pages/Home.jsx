@@ -46,7 +46,8 @@ function Home() {
         // const manga_call = `http://localhost:5000/?${params.toString()}`
         const manga_call = `${API_URL}/?${params.toString()}`
 
-        console.log("Fetching from", manga_call);
+        console.log(API_URL);
+        console.log("Fetching from =>", manga_call);
         const res = await fetch(manga_call)
         if (!res.ok) throw new Error("Failed to Fetch")
         const data = await res.json()
