@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Badge } from "@/components/ui/badge"
 
-const API_URL = "https://manga-backend-production-5e57.up.railway.app"
+// const API_URL = "https://manga-backend-production-5e57.up.railway.app"
+const API_URL = "https://manga-backend-9q0c.onrender.com/"
 
 function Home() {
   const [manga, setManga] = useState([])
