@@ -37,7 +37,7 @@ import {
 } from "lucide-react"
 
 // Define API URL
-const API_URL = "http://localhost:5000/" 
+const API_URL = "https://manga-backend-9q0c.onrender.com/" 
 
 // Helper function to get initial theme from local storage or system preference
 const getInitialTheme = () => {
