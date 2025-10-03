@@ -16,8 +16,8 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Badge } from "@/components/ui/badge"
 
-// const API_URL = "https://manga-backend-production-5e57.up.railway.app"
 const API_URL = "https://manga-backend-9q0c.onrender.com/"
+// const API_URL = "http://localhost:5000/"
 
 function Home() {
   const [manga, setManga] = useState([])
@@ -42,7 +42,7 @@ function Home() {
         if (artist) params.append("artist", artist)
         if (languageFilter) params.append("language", languageFilter)
 
-        const manga_call = `${API_URL}/?${params.toString()}`
+        const manga_call = `${API_URL}?${params.toString()}`
         const res = await fetch(manga_call)
         if (!res.ok) throw new Error("Failed to Fetch")
         const data = await res.json()
@@ -83,7 +83,7 @@ function Home() {
     if (!term.trim()) return
     setLoading(true)
     try {
-      const res = await fetch(`${API_URL}/search?q=${encodeURIComponent(term)}`)
+      const res = await fetch(`${API_URL}search?q=${encodeURIComponent(term)}`)
       const data = await res.json()
       setManga(data)
       setCurrentPage(1)
@@ -231,7 +231,7 @@ function Home() {
                 className="block"
               >
                 <img
-                  src={`${API_URL}/proxy-image?url=${encodeURIComponent(manga.cover_image_url)}`}
+                  src={`${API_URL}proxy-image?url=${encodeURIComponent(manga.cover_image_url)}`}
                   alt={manga.title}
                   className={`w-full h-52 sm:h-80 object-contain bg-gray-200 object-center transition-transform duration-300 hover:scale-105 ${blur ? "blur" : ""}`}
                 />
